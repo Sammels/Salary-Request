@@ -4,7 +4,8 @@ import requests
 
 if __name__ == "__main__":
     start_time = time.time()
-    vacansie_url_api = 'https://api.hh.ru/vacancies'
+    vacancie_url_api = 'https://api.hh.ru/vacancies'
+    specialization_url_api = 'https://api.hh.ru/specializations'
 
     headers = {
         'User-Agent': 'api-test-agent'
@@ -13,14 +14,19 @@ if __name__ == "__main__":
         'area':'1',
     }
 
-    response = requests.get(vacansie_url_api, headers=headers, params=payload)
+    # Vacansies and Moskow
+    response = requests.get(vacancie_url_api, headers=headers, params=payload)
     response.raise_for_status()
     cont = response.json().get('items')
 
     # Parse work title
     vacansies_list = []
     for number, items in enumerate(cont):
-        print(number, items.get('name'), "city: ", items.get('area')["name"])
+        print(number, items.get('name'), f"city: {items.get('area')['name']}")
+
+
+    # new rsponse
+
 
 
     # Check time resource
