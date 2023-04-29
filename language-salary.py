@@ -5,13 +5,13 @@ import requests
 if __name__ == "__main__":
     start_time = time.time()
     vacancie_url_api = 'https://api.hh.ru/vacancies'
-    specialization_url_api = 'https://api.hh.ru/specializations'
-
     headers = {
         'User-Agent': 'api-test-agent'
     }
     payload = {
-        'area':'1',
+        'area': '1',
+        'text': 'Программист',
+        'period': 30,
     }
 
     # Vacansies and Moskow
@@ -23,9 +23,6 @@ if __name__ == "__main__":
     vacansies_list = []
     for number, items in enumerate(cont):
         print(number, items.get('name'), f"city: {items.get('area')['name']}")
-
-
-    # new rsponse
 
 
 
