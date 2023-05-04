@@ -3,16 +3,18 @@ import requests
 
 
 if __name__ == "__main__":
-    programm_language_popular = {}
     start_time = time.time()
-    programm_language = ["Python", "Java", "Javascript", "Ruby",
-                         "PHP", "C++"]
+    programm_language_popular = {}
+    programm_languages = ["Python", "Java", "Javascript", "Ruby",
+                         "PHP", "C++", "C#", "C",
+                         "Go", "Shell"]
 
     vacancie_url_api = 'https://api.hh.ru/vacancies'
     headers = {
         'User-Agent': 'api-test-agent'
     }
-    for language in programm_language:
+
+    for language in programm_languages:
 
         payload = {
             'area': '1',
@@ -34,9 +36,9 @@ if __name__ == "__main__":
         #     print(number, items.get('name'), f"city: {items.get('area')['name']}")
 
         # Шаг 3 словарь с языками
-        programm_language_popular = {f"{language}": found_vacancies}
+        programm_language_popular[language] = found_vacancies
 
-        print(programm_language_popular)
+    print(programm_language_popular)
 
     # Check time resource
     end_time = time.time() - start_time
