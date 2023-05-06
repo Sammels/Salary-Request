@@ -6,8 +6,8 @@ if __name__ == "__main__":
     start_time = time.time()
     programm_language_popular = {}
     programm_languages = ["Python", "Java", "Javascript", "Ruby",
-                         "PHP", "C++", "C#", "C",
-                         "Go", "Shell"]
+                          "PHP", "C++", "C#", "C",
+                          "Go", "Shell"]
 
     vacancie_url_api = 'https://api.hh.ru/vacancies'
     headers = {
@@ -19,10 +19,9 @@ if __name__ == "__main__":
         payload = {
             'area': '1',
             'text': f"Программист {language}",
-            'period': 30,
+            'period': 3,
             'only_with_salary': True,
         }
-
 
         # Vacansies in Moskow
         response = requests.get(vacancie_url_api, headers=headers, params=payload)
