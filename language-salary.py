@@ -1,6 +1,6 @@
 import time
 import requests
-import logging
+
 
 def parse_hh():
     programm_language_popular = {}
@@ -14,7 +14,6 @@ def parse_hh():
     }
 
     for language in programm_languages:
-
         payload = {
             'area': '1',
             'text': f"Программист {language}",
@@ -51,7 +50,6 @@ def predict_rub_salary(vacancies_id: str) -> str:
 
     payload = {
         'area': '1',
-        'period': 3,
         'only_with_salary': True,
         'currency': 'RUR',
     }
@@ -62,7 +60,7 @@ def predict_rub_salary(vacancies_id: str) -> str:
     if 'USD' not in container['currency']:
         if not container['from']:
             max_salary = container['to'] * 0.8
-            print(max_salary)
+            print (max_salary)
         elif not container['to']:
             min_salary = container['from'] * 1.2
             print(min_salary)
@@ -72,47 +70,41 @@ def predict_rub_salary(vacancies_id: str) -> str:
             current_salary = (min_salary + max_salary) // 2
             print(current_salary)
     else:
-        print(None)
-
-
-
+        return 'None'
 
 
 if __name__ == "__main__":
     start_time = time.time()
 
+    programm_languages = ["Python", "Java", "Javascript", "Ruby",
+                          "PHP", "C++", "C#", "C",
+                          "Go", "Shell"]
+
     vacancie_url_api = 'https://api.hh.ru/vacancies'
 
     headers = {
-        'User-Agent': 'api-test-agent'
+        'User-Agent': 'api-agent'
     }
 
-    payload = {
-        'area': '1',
-        'per_page': 20,
-        'text': "Программист Python",
-        'period': 3,
-        'only_with_salary': True,
-        'currency': 'RUR',
-    }
+    for language in programm_languages:
+        payload = {
+            'area': '1',
+            'per_page': 20,
+            'text': f"Программист {language}",
+            'period': 30,
+            'only_with_salary': True,
+            'currency': 'RUR',
+        }
+        response = requests.get(vacancie_url_api, headers=headers, params=payload)
+        response.raise_for_status()
+        cont = response.json().get('items')
 
-    response = requests.get(vacancie_url_api, headers=headers, params=payload)
-    response.raise_for_status()
-    cont = response.json().get('items')
+        for number, items in enumerate(cont):
+            vacancies_id = items['id']
+            salary = items['salary']
+            predict_rub_salary(vacancies_id)
 
-
-    vacansies_list = []
-    for number, items in enumerate(cont):
-        vacancies_id = items['id']
-        salary = items['salary']
-
-        predict_rub_salary(vacancies_id)
-
-        # print(number, items.get('name'),
-        #       "Salary: ", salary,
-        #       vacancies_id)
-
-
+        time.sleep(5)
     # Check time resource
     end_time = time.time() - start_time
     print('\n', end_time)
