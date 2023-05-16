@@ -60,10 +60,10 @@ def predict_rub_salary(vacancies_id: str) -> str:
     if 'USD' not in container['currency']:
         if not container['from']:
             max_salary = container['to'] * 0.8
-            print (max_salary)
+            print(int(max_salary))
         elif not container['to']:
             min_salary = container['from'] * 1.2
-            print(min_salary)
+            print(int(min_salary))
         else:
             min_salary = container['from']
             max_salary = container['to']
@@ -76,9 +76,7 @@ def predict_rub_salary(vacancies_id: str) -> str:
 if __name__ == "__main__":
     start_time = time.time()
 
-    programm_languages = ["Python", "Java", "Javascript", "Ruby",
-                          "PHP", "C++", "C#", "C",
-                          "Go", "Shell"]
+    programm_languages = ["Python", "Java", "Javascript"]
 
     vacancie_url_api = 'https://api.hh.ru/vacancies'
 
@@ -98,13 +96,15 @@ if __name__ == "__main__":
         response = requests.get(vacancie_url_api, headers=headers, params=payload)
         response.raise_for_status()
         cont = response.json().get('items')
+        found_vacancies = response.json().get('found')
+        print(found_vacancies)
 
         for number, items in enumerate(cont):
             vacancies_id = items['id']
             salary = items['salary']
             predict_rub_salary(vacancies_id)
 
-        time.sleep(5)
+        time.sleep(8)
     # Check time resource
     end_time = time.time() - start_time
     print('\n', end_time)
