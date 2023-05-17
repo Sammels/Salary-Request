@@ -50,36 +50,49 @@ if __name__ == "__main__":
         'User-Agent': 'api-agent'
     }
 
-    for language in programm_languages:
-        payload = {
-            'area': '1',
-            'text': f"Программист {language}",
-            'period': 30,
-            'only_with_salary': True,
-            'currency': 'RUR',
-        }
-        response = requests.get(vacancie_url_api, headers=headers, params=payload)
-        response.raise_for_status()
-        cont = response.json().get('items')
-        found_vacancies = response.json().get('found')
+    page = 0
+    pages_number = 20
+
+    while page < pages_number:
+
+        for language in programm_languages:
+            payload = {
+                'area': '1',
+                'page': page,
+                'text': f"Программист {language}",
+                'period': 30,
+                'only_with_salary': True,
+                'currency': 'RUR',
+            }
+            page_response = requests.get(vacancie_url_api, headers=headers, params=payload)
+            page_response.raise_for_status()
+            page_payload = page_response.json()
+            page_items = page_payload.get('items')
+            found_vacancies = page_response.json().get('found')
+            pages_number = page_payload['page']
+            page += 1
 
 
-        for number, items in enumerate(cont):
-            programm_language = {}
-            vacancies_id = items['id']
-            prediction_salary = predict_rub_salary(vacancies_id)
-            average_salary.append(prediction_salary)
+            for number, items in enumerate(page_items):
+                programm_language = {}
+                vacancies_id = items['id']
+                prediction_salary = predict_rub_salary(vacancies_id)
+                if prediction_salary is not None:
+                    average_salary.append(prediction_salary)
 
-            vacancies_processed.append(number)
-            programm_language['found_vacancies'] = found_vacancies
-            programm_language['vacancies_processed'] = len(vacancies_processed)
+                vacancies_processed.append(number)
+                programm_language['found_vacancies'] = found_vacancies
+                programm_language['vacancies_processed'] = len(average_salary)
+                programm_language['average_salary'] = sum(average_salary) // len(average_salary)
 
-        vacancies_processed = []
-        programm_language_popular[language] = programm_language
-        #print(sum(average_salary) // len(average_salary))
-        print(programm_language_popular)
 
-        time.sleep(8)
+            programm_language_popular[language] = programm_language
+
+
+            print(programm_language_popular)
+            average_salary = []
+            time.sleep(8)
+
     # Check time resource
     end_time = time.time() - start_time
     print('\n', end_time)
