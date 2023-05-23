@@ -4,16 +4,7 @@ import requests
 
 def predict_rub_salary(vacancies_id: str) -> int:
     """The function predicts the salary in rubles"""
-    vacancies_url_api = f"https://api.hh.ru/vacancies/{vacancies_id}"
-
-    headers = {"User-Agent": "api-test-agent"}
-
-    payload = {
-        "currency": "RUR",
-    }
-    response = requests.get(vacancies_url_api, headers=headers, params=payload)
-    response.raise_for_status()
-    container = response.json().get("salary")
+    container = vacancies_id
 
     if "USD" not in container["currency"]:
         if not container["from"]:
@@ -40,12 +31,12 @@ if __name__ == "__main__":
 
     massive_data = []
 
-    # programm_languages = ["Python", "Java", "Javascript"]
-    programm_languages = ["Python"]
+    #programm_languages = ["Python", "Java", "Javascript"]
+    programm_languages = ["Python",]
 
     vacancie_url_api = "https://api.hh.ru/vacancies"
 
-    headers = {"User-Agent": "api-agent-awesome"}
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0"}
 
     page = 0
     pages_number = 20
@@ -63,44 +54,23 @@ if __name__ == "__main__":
             page_response = requests.get(
                 vacancie_url_api, headers=headers, params=payload
             )
+            page += 1
             page_response.raise_for_status()
             page_payload = page_response.json()
             page_items = page_payload.get("items")
             found_vacancies = page_response.json().get("found")
 
-            massive_data.append(page_items)
-            page += 1
 
-            for number, items in enumerate(massive_data):
-                programm_language = []
-                for data in items:
-                    vacancy_id = data["id"]
-                    prediction_salary = predict_rub_salary(vacancy_id)
-                    if prediction_salary is not None:
-                        average_salary.append(prediction_salary)
-                        print(average_salary)
+            for number, items in enumerate(page_items):
+                avenue = items.get("salary")
+                summary = predict_rub_salary(avenue)
+                if massive_data is not None:
+                    massive_data.append(summary)
+                print(language, massive_data)
+
+            print(massive_data)
 
 
-            #
-            # for number, items in enumerate(page_items):
-            #     programm_language = {}
-            #     vacancies_id = items["id"]
-            #     prediction_salary = predict_rub_salary(vacancies_id)
-            #     if prediction_salary is not None:
-            #         average_salary.append(prediction_salary)
-            #
-            #     vacancies_processed.append(number)
-            #     programm_language["found_vacancies"] = found_vacancies
-            #     programm_language["vacancies_processed"] = len(average_salary)
-            #     programm_language["average_salary"] = sum(average_salary) // len(
-            #         average_salary
-            #     )
-            #
-            #
-            # programm_language_popular[language] = programm_language
-            #
-            # print(programm_language_popular)
-            # average_salary = []
 
     # Check time resource
     end_time = time.time() - start_time
