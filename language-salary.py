@@ -2,25 +2,22 @@ import time
 import requests
 
 
-def predict_rub_salary(vacancies_id: str) -> int:
+def predict_salary(salary_from: int, salary_to: int) -> int:
     """The function predicts the salary in rubles"""
-    container = vacancies_id
+    container = {'salary_from': salary_from,
+                'salary_to': salary_to}
 
-    if "USD" not in container["currency"]:
-        if not container["from"]:
-            max_salary = int(container["to"] * 0.8)
-            return max_salary
-        elif not container["to"]:
-            min_salary = int(container["from"] * 1.2)
-            return min_salary
-        else:
-            min_salary = container["from"]
-            max_salary = container["to"]
-            current_salary = (min_salary + max_salary) // 2
-            return current_salary
+    if not container['salary_from']:
+        max_salary = int(container["salary_to"] * 0.8)
+        return max_salary
+    elif not container['salary_to']:
+        min_salary = int(container["salary_from"] * 1.2)
+        return min_salary
     else:
-        return None
-
+        min_salary = container['salary_from']
+        max_salary = container['salary_to']
+        current_salary = (min_salary + max_salary) // 2
+        return current_salary
 
 if __name__ == "__main__":
     start_time = time.time()
@@ -31,8 +28,7 @@ if __name__ == "__main__":
 
     massive_data = []
 
-    #programm_languages = ["Python", "Java", "Javascript"]
-    programm_languages = ["Python",]
+    programm_languages = ["Python", "Java", "Javascript"]
 
     vacancie_url_api = "https://api.hh.ru/vacancies"
 
@@ -63,12 +59,16 @@ if __name__ == "__main__":
 
             for number, items in enumerate(page_items):
                 avenue = items.get("salary")
-                summary = predict_rub_salary(avenue)
-                if massive_data is not None:
-                    massive_data.append(summary)
-                print(language, massive_data)
+                salary_from = avenue.get('from')
+                salary_to = avenue.get('to')
+                сurrency = avenue.get("currency")
 
-            print(massive_data)
+                if сurrency not in 'USD':
+                    summary = predict_salary(salary_from, salary_to)
+                    massive_data.append(summary)
+                    print(language, massive_data)
+            massive_data = []
+
 
 
 
