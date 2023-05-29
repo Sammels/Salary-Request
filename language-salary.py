@@ -4,20 +4,20 @@ import requests
 
 def predict_salary(salary_from: int, salary_to: int) -> int:
     """The function predicts the salary in rubles"""
-    container = {'salary_from': salary_from,
-                'salary_to': salary_to}
+    container = {"salary_from": salary_from, "salary_to": salary_to}
 
-    if not container['salary_from']:
+    if not container["salary_from"]:
         max_salary = int(container["salary_to"] * 0.8)
         return max_salary
-    elif not container['salary_to']:
+    elif not container["salary_to"]:
         min_salary = int(container["salary_from"] * 1.2)
         return min_salary
     else:
-        min_salary = container['salary_from']
-        max_salary = container['salary_to']
+        min_salary = container["salary_from"]
+        max_salary = container["salary_to"]
         current_salary = (min_salary + max_salary) // 2
         return current_salary
+
 
 if __name__ == "__main__":
     start_time = time.time()
@@ -28,11 +28,13 @@ if __name__ == "__main__":
 
     massive_data = []
 
-    programm_languages = ["Python", "Java", "Javascript"]
+    programm_languages = ["Python", "Java", "Javascript", 'C++', "C#", 'Go', 'Rust']
 
     vacancie_url_api = "https://api.hh.ru/vacancies"
 
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0"}
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0"
+    }
 
     page = 0
     pages_number = 20
@@ -50,27 +52,32 @@ if __name__ == "__main__":
             page_response = requests.get(
                 vacancie_url_api, headers=headers, params=payload
             )
-            page += 1
+
             page_response.raise_for_status()
             page_payload = page_response.json()
             page_items = page_payload.get("items")
             found_vacancies = page_response.json().get("found")
 
-
             for number, items in enumerate(page_items):
                 avenue = items.get("salary")
-                salary_from = avenue.get('from')
-                salary_to = avenue.get('to')
+                salary_from = avenue.get("from")
+                salary_to = avenue.get("to")
                 сurrency = avenue.get("currency")
+                number_list = []
 
-                if сurrency not in 'USD':
+                if сurrency not in "USD":
                     summary = predict_salary(salary_from, salary_to)
                     massive_data.append(summary)
-                    print(language, massive_data)
-            massive_data = []
+                    number_list.append(number)
 
+            programm_language_popular[language] = {
+                "vacancies_found": found_vacancies,
+                "vacancies_processed": len(number_list),
+                "average_salary": sum(massive_data) // len(massive_data),
+            }
+        page += 1
 
-
+    print(programm_language_popular)
 
     # Check time resource
     end_time = time.time() - start_time
