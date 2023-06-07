@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from itertools import count
 from terminaltables import AsciiTable
 
-PROGRAMM_LANGUAGE = ["Python", "Java", "Javascript", 'C++', "C#", 'Go', 'Rust',
+PROGRAMM_LANGUAGES = ["Python", "Java", "Javascript", 'C++', "C#", 'Go', 'Rust',
                      "PHP", "Ruby", "Swift", "Kotlin", "TypeScript"]
 
 
@@ -101,11 +101,11 @@ def predict_rub_salary_for_sj(vacancy: dict) -> int:
         average_salary = calculate_average_salary(vacancy["payment_from"], vacancy["payment_to"])
     return average_salary
 
-def create_table(salary_by_language):
+def create_table(salary_by_languages):
     table_salaries = [
         ["Язык программирования", "Вакансий найдено", "Вакансий обработано",
          "Средняя зарплата"]]
-    for language, properties_vacancies in salary_by_language.items():
+    for language, properties_vacancies in salary_by_languages.items():
         table_salaries.append([language, properties_vacancies['vacancies_found'],
                                properties_vacancies['vacancies_processed'],
                                properties_vacancies['average_salary']])
@@ -116,7 +116,7 @@ def create_table(salary_by_language):
 
 def combine_hh_salaries():
     salary_by_languages = {}
-    for language in PROGRAMM_LANGUAGE:
+    for language in PROGRAMM_LANGUAGES:
         response = get_hh_vacancies(language)
         salaries = extract_hh_salary(response)
         reps_counts = len(response)
@@ -133,7 +133,7 @@ def combine_hh_salaries():
 
 def combine_sj_vacancies():
     salary_by_languages = {}
-    for language in PROGRAMM_LANGUAGE:
+    for language in PROGRAMM_LANGUAGES:
         response = get_sj_vacancies(language, token)
         salaries = extract_sj_salary(response)
         reps_counts = len(response)
