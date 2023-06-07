@@ -1,5 +1,4 @@
 import os
-import time
 import requests
 from dotenv import load_dotenv
 from itertools import count
@@ -99,7 +98,7 @@ def predict_rub_salary_for_hh(salary: dict) -> int:
 def predict_rub_salary_for_sj(vacancy: dict) -> int:
     average_salary = 0
     if vacancy["currency"] == "rub":
-        average_salary = calculate_average_salary(vacancy["payment_from"], vacancy["paymen_to"])
+        average_salary = calculate_average_salary(vacancy["payment_from"], vacancy["payment_to"])
     return average_salary
 
 def create_table(salary_by_language):
@@ -151,7 +150,6 @@ def combine_sj_vacancies():
 if __name__ == "__main__":
     load_dotenv()
 
-    start_time = time.time()
     token = os.environ['SJ_TOKEN']
 
     table = create_table(combine_hh_salaries())
@@ -163,6 +161,3 @@ if __name__ == "__main__":
     table.title = "SuperJob Moskow"
     print(table.table)
 
-    # Check time resource
-    end_time = time.time() - start_time
-    print("\n", end_time)
