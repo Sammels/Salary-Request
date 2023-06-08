@@ -7,6 +7,12 @@ from terminaltables import AsciiTable
 PROGRAMM_LANGUAGES = ["Python", "Java", "Javascript", 'C++', "C#", 'Go', 'Rust',
                       "PHP", "Ruby", "Swift", "Kotlin", "TypeScript"]
 
+PROFESSIONAL_ROLE = 96
+PERIOD_IN_DAYS = 30
+SJ_COUNT_IN_PAGE = 100
+MAX_COUNT_PAGE = 19
+
+
 
 def get_hh_vacancies(language: list[str]) -> list[str]:
     """Function get list and send  GET reqeust to HeadHanter Api. Return vacancies list"""
@@ -17,8 +23,8 @@ def get_hh_vacancies(language: list[str]) -> list[str]:
     }
     hh_vacancies = []
     for page in count(0):
-        payload = {'professional_role': 96, 'area': '1',
-                   'period': 30, 'only_with_salary': False,
+        payload = {'professional_role': PROFESSIONAL_ROLE, 'area': '1',
+                   'period': PERIOD_IN_DAYS, 'only_with_salary': False,
                    'text': language, 'per_page': '100',
                    'page': page}
 
@@ -28,7 +34,7 @@ def get_hh_vacancies(language: list[str]) -> list[str]:
         response.raise_for_status()
         vacancies = response.json()
         hh_vacancies += vacancies["items"]
-        if page >= vacancies["pages"] or page >= 19:
+        if page >= vacancies["pages"] or page >= MAX_COUNT_PAGE:
             break
     return hh_vacancies
 
@@ -41,8 +47,8 @@ def get_sj_vacancies(language: str, token: str) -> list:
     for page in count(0):
         profession_category = {'33': ['36', '48', '604']}
         payload = {'town': '4', 'categories': profession_category,
-                   'count': 100, 'page': page,
-                   'keyword': language, 'period': 30}
+                   'count': SJ_COUNT_IN_PAGE, 'page': page,
+                   'keyword': language, 'period': PERIOD_IN_DAYS}
         response = requests.get(sjob_api_address, headers=header, params=payload)
         response.raise_for_status()
         vacancies = response.json()
