@@ -11,6 +11,19 @@
 ```shell
 pip intall -r requirements.txt
 ```
+
+## Запукс
+
+```shell
+python language-salary.py
+```
+
+Вывод в консоль
+
+![img.png](img.png)
+
+![img_1.png](img_1.png)
+
 ### Цель проекта
 
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org](https://dvmn.org/).
